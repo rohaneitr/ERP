@@ -1,4 +1,9 @@
 <?php
+// TEMP DEBUG: show raw PHP errors to diagnose 500 — REMOVE AFTER FIX
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+// END TEMP DEBUG
 
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\Request;
