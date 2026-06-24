@@ -109,14 +109,14 @@
         <div style="width:100%; max-width:440px; margin:0 auto;">
 
             {{-- App Branding --}}
-            <div style="text-align:center; margin-bottom:28px;">
-                <div style="display:inline-flex; align-items:center; justify-content:center; width:56px; height:56px; background:linear-gradient(135deg,#4f46e5,#6366f1); border-radius:16px; box-shadow:0 8px 24px rgba(79,70,229,0.35); margin-bottom:16px;">
+            <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:28px;">
+                <div style="display:flex; align-items:center; justify-content:center; width:56px; height:56px; background:linear-gradient(135deg,#4f46e5,#6366f1); border-radius:16px; box-shadow:0 8px 24px rgba(79,70,229,0.35); margin-bottom:16px;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
                 </div>
-                <h1 style="font-size:1.5rem; font-weight:800; color:#ffffff; margin:0 0 4px; letter-spacing:-0.02em;">
+                <h1 style="font-size:1.5rem; font-weight:800; color:#ffffff; margin:0 0 4px; letter-spacing:-0.02em; text-align:center;">
                     {{ config('app.name', 'FastPos ERP') }}
                 </h1>
-                <p style="color:rgba(148,163,184,0.9); font-size:0.875rem; font-weight:400; margin:0;">
+                <p style="color:rgba(148,163,184,0.9); font-size:0.875rem; font-weight:400; margin:0; text-align:center;">
                     @lang('lang_v1.welcome_back') — @lang('lang_v1.login_to_your') account
                 </p>
             </div>
