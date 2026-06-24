@@ -44,6 +44,9 @@ ENV PHP_DISPLAY_ERRORS=0
 WORKDIR /app
 COPY . /app
 
+# Create required Laravel storage directories
+RUN mkdir -p storage/framework/views storage/framework/cache/data storage/framework/sessions storage/framework/testing storage/logs storage/app/public
+
 # ─── Composer Install (production, no dev) ───────────────────────────────────
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && composer install --no-dev --optimize-autoloader --no-interaction --no-progress \
