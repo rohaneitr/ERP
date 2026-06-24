@@ -29,18 +29,36 @@ foreach ($paths as $path) {
     }
 }
 
+echo "\n--- Environment Variables ---\n";
+$envVars = $_ENV ?: ($_SERVER ?: []);
+foreach (getenv() as $key => $val) {
+    $envVars[$key] = $val;
+}
+ksort($envVars);
+foreach ($envVars as $key => $value) {
+    if (preg_match('/(PASS|KEY|SECRET|TOKEN|AUTH|CREDENTIAL)/i', $key)) {
+        echo "$key: ********\n";
+    } else {
+        echo "$key: $value\n";
+    }
+}
+
 echo "\n--- DB Connection Test ---\n";
+$env = [];
 if (file_exists('../.env')) {
-    $env = parse_ini_file('../.env');
-    $host = $env['DB_HOST'] ?? '';
-    $db = $env['DB_DATABASE'] ?? '';
-    $user = $env['DB_USERNAME'] ?? '';
-    $pass = $env['DB_PASSWORD'] ?? '';
-    
-    echo "Host: $host, DB: $db, User: $user\n";
+    // Suppress warning if parsing fails due to syntax
+    $env = @parse_ini_file('../.env') ?: [];
+}
+$host = getenv('DB_HOST') ?: ($env['DB_HOST'] ?? '');
+$db = getenv('DB_DATABASE') ?: ($env['DB_DATABASE'] ?? '');
+$user = getenv('DB_USERNAME') ?: ($env['DB_USERNAME'] ?? '');
+$pass = getenv('DB_PASSWORD') ?: ($env['DB_PASSWORD'] ?? '');
+
+echo "Host: $host, DB: $db, User: $user\n";
+if ($host && $db) {
     try {
         $pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8mb4", $user, $pass, [
-            PDO::ATTR_ERRORS => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_TIMEOUT => 5
         ]);
         echo "DB Connection: SUCCESS!\n";
@@ -48,7 +66,7 @@ if (file_exists('../.env')) {
         echo "DB Connection: FAILED: " . $e->getMessage() . "\n";
     }
 } else {
-    echo ".env not found\n";
+    echo "DB Config is empty.\n";
 }
 
 echo "\n--- Last 30 lines of Laravel daily log ---\n";
