@@ -128,9 +128,16 @@ class SuperadminServiceProvider extends ServiceProvider
             $sourcePath => $viewPath,
         ], 'views');
 
-        $this->loadViewsFrom(array_merge(array_map(function ($path) {
-            return $path.'/modules/superadmin';
-        }, config('view.paths')), [$sourcePath]), 'superadmin');
+        // Filter out non-existent override paths to prevent Symfony Finder from
+        // throwing RuntimeException: "The "/path" directory does not exist."
+        $overridePaths = array_values(array_filter(
+            array_map(function ($path) {
+                return $path.'/modules/superadmin';
+            }, config('view.paths')),
+            'is_dir'
+        ));
+
+        $this->loadViewsFrom(array_merge($overridePaths, [$sourcePath]), 'superadmin');
     }
 
     /**

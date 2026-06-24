@@ -26,8 +26,11 @@ ENV PHP_DISPLAY_ERRORS=0
 WORKDIR /app
 COPY . /app
 
-# Create required Laravel storage directories
-RUN mkdir -p storage/framework/views storage/framework/cache/data storage/framework/sessions storage/framework/testing storage/logs storage/app/public
+# Create required Laravel storage directories + module view override dirs
+# SuperadminServiceProvider::registerViews() calls loadViewsFrom() which passes
+# /app/resources/views/modules/superadmin to Symfony Finder — it must exist
+RUN mkdir -p storage/framework/views storage/framework/cache/data storage/framework/sessions storage/framework/testing storage/logs storage/app/public \
+    && mkdir -p resources/views/modules/superadmin
 
 # ─── Composer Install (production, no dev) ───────────────────────────────────
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
