@@ -4,26 +4,8 @@ LABEL maintainer="Fast Technologies <fctbd1@gmail.com>"
 LABEL app="FastPos"
 LABEL vendor="Fast Technologies"
 
-# ─── System Dependencies ──────────────────────────────────────────────────────
-RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    libzip-dev \
-    libicu-dev \
-    libonig-dev \
-    unzip \
-    git \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install \
-        gd \
-        zip \
-        intl \
-        mbstring \
-        exif \
-        bcmath \
-        opcache \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+# Note: webdevops/php-apache:8.2 already contains all required extensions (gd, zip, intl, mbstring, exif, bcmath, opcache, pdo_mysql) out of the box.
+# No need to compile them, which avoids CPU/RAM locking on the VPS.
 
 # ─── PHP Config ───────────────────────────────────────────────────────────────
 ENV PHP_MEMORY_LIMIT=512M
