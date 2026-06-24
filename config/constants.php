@@ -11,6 +11,7 @@ return [
 
     'langs' => [
         'en' => ['full_name' => 'English', 'short_name' => 'English'],
+        'bn' => ['full_name' => 'Bengali - বাংলা', 'short_name' => 'বাংলা'],
         'es' => ['full_name' => 'Spanish - Español', 'short_name' => 'Spanish'],
         'sq' => ['full_name' => 'Albanian - Shqip', 'short_name' => 'Albanian'],
         'hi' => ['full_name' => 'Hindi - हिंदी', 'short_name' => 'Hindi'],

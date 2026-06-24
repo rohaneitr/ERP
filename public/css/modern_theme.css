@@ -4,6 +4,7 @@
    ============================================================= */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap');
 
 /* ─── CSS Custom Properties ─────────────────────────────────── */
 :root {
@@ -55,6 +56,16 @@ p, a, span, div, label,
 input, button, select, textarea,
 .btn, .nav, .navbar, .sidebar-menu {
     font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+}
+
+/* Bengali typography override */
+html[lang="bn"] body,
+html[lang="bn"] h1, html[lang="bn"] h2, html[lang="bn"] h3, html[lang="bn"] h4, html[lang="bn"] h5, html[lang="bn"] h6,
+html[lang="bn"] .h1, html[lang="bn"] .h2, html[lang="bn"] .h3, html[lang="bn"] .h4, html[lang="bn"] .h5, html[lang="bn"] .h6,
+html[lang="bn"] p, html[lang="bn"] a, html[lang="bn"] span, html[lang="bn"] div, html[lang="bn"] label,
+html[lang="bn"] input, html[lang="bn"] button, html[lang="bn"] select, html[lang="bn"] textarea,
+html[lang="bn"] .btn, html[lang="bn"] .nav, html[lang="bn"] .navbar, html[lang="bn"] .sidebar-menu {
+    font-family: 'Hind Siliguri', 'Inter', system-ui, -apple-system, sans-serif !important;
 }
 
 body {

@@ -1,0 +1,35 @@
+<?php
+
+return [
+
+    'contacts'          => 'যোগাযোগসমূহ',
+    'name'              => 'নাম',
+    'contact'           => 'যোগাযোগ',
+    'manage_your_contact' => 'আপনার :contacts পরিচালনা করুন',
+    'all_your_contact'  => 'আপনার সকল :contacts',
+    'add_contact'       => 'নতুন যোগাযোগ যোগ করুন',
+    'contact_type'      => 'যোগাযোগের ধরন',
+    'tax_no'            => 'কর নম্বর',
+    'pay_term'          => 'পেমেন্টের মেয়াদ',
+    'pay_term_period'   => 'পেমেন্টের মেয়াদকাল',
+    'mobile'            => 'মোবাইল',
+    'landline'          => 'ল্যান্ডলাইন',
+    'alternate_contact_number' => 'বিকল্প যোগাযোগ নম্বর',
+    'edit_contact'      => 'যোগাযোগ সম্পাদনা করুন',
+    'added_success'     => 'যোগাযোগ সফলভাবে যোগ করা হয়েছে',
+    'updated_success'   => 'যোগাযোগ সফলভাবে আপডেট হয়েছে',
+    'deleted_success'   => 'যোগাযোগ সফলভাবে মুছে ফেলা হয়েছে',
+    'add_new_customer'  => 'নতুন গ্রাহক যোগ করুন',
+    'view_contact'      => 'যোগাযোগ দেখুন',
+    'contact_info'      => ':contact তথ্য',
+    'all_purchases_linked_to_this_contact' => 'এই যোগাযোগ সংক্রান্ত সকল ক্রয়',
+    'all_sells_linked_to_this_contact' => 'এই যোগাযোগ সংক্রান্ত সকল বিক্রয়',
+    'total_purchase_due'=> 'মোট ক্রয় বকেয়া',
+    'pay_due_amount'    => 'বকেয়া পরিমাণ পরিশোধ করুন',
+    'total_paid'        => 'মোট পরিশোধিত',
+    'total_purchase_paid' => 'মোট ক্রয় পেমেন্ট',
+    'total_sale_paid'   => 'মোট বিক্রয় পেমেন্ট',
+    'total_sale_due'    => 'মোট বিক্রয় বকেয়া',
+    'customer'          => 'গ্রাহক',
+
+];
