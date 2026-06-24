@@ -19,8 +19,8 @@ php artisan config:cache
 echo "[FastPos] Caching routes..."
 php artisan route:cache
 
-echo "[FastPos] Caching views..."
-php artisan view:cache
+# Skip view:cache to avoid crashing on missing custom/module view directories
+# Views will be compiled on-demand by Laravel.
 
 echo "[FastPos] Running migrations..."
 php artisan migrate --force --no-interaction
