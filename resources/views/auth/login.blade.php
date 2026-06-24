@@ -27,10 +27,9 @@
             }
         }
     @endphp
-    <div class="row">
-        <div class="col-md-4">
-        @if (config('app.env') == 'demo')
-        
+    @if (config('app.env') == 'demo')
+        <div class="row">
+            <div class="col-md-4">
                 @component('components.widget', [
                     'class' => 'box-primary',
                     'header' =>
@@ -100,11 +99,10 @@
                         <i class="fas fa-network-wired"></i>
                         Connector Module / API Documentation</a>
                 @endcomponent
-            
-            
-        
+            </div>
+            <div class="col-md-8" style="display:flex; justify-content:center; align-items:center;">
     @endif
-        </div>
+
         {{-- centered login card --}}
         <div style="width:100%; max-width:440px; margin:0 auto;">
 
@@ -239,6 +237,11 @@
                 © {{ date('Y') }} {{ config('app.name', 'FastPos ERP') }} &mdash; Enterprise Point of Sale
             </p>
         </div>
+
+    @if (config('app.env') == 'demo')
+            </div>
+        </div>
+    @endif
 
 @stop
 @section('javascript')
