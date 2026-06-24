@@ -105,118 +105,140 @@
         
     @endif
         </div>
-        <div class="col-md-4">
-            <div
-                class="tw-p-5 md:tw-p-6 tw-mb-4 tw-rounded-2xl tw-transition-all tw-duration-200 tw-bg-white tw-shadow-sm tw-ring-1 tw-ring-gray-200">
-                <div class="tw-flex tw-flex-col tw-gap-4 tw-dw-rounded-box tw-dw-p-6 tw-dw-max-w-md">
-                    <div class="tw-flex tw-items-center tw-flex-col">
-                        <h1 class="tw-text-lg md:tw-text-xl tw-font-semibold tw-text-[#1e1e1e]">
-                            @lang('lang_v1.welcome_back')
-                        </h1>
-                        <h2 class="tw-text-sm tw-font-medium tw-text-gray-500">
-                            @lang('lang_v1.login_to_your') {{ config('app.name', 'FastPos') }}
-                        </h2>
-                    </div>
+        {{-- centered login card --}}
+        <div style="width:100%; max-width:440px; margin:0 auto;">
 
-                    <form method="POST" action="{{ route('login') }}" id="login-form">
-                        {{ csrf_field() }}
-                        <div class="form-group has-feedback {{ $errors->has('username') ? ' has-error' : '' }}">
-                            <label class="tw-dw-form-control">
-                                <div class="tw-dw-label">
-                                    <span
-                                        class="tw-text-xs md:tw-text-sm tw-font-medium tw-text-black">@lang('lang_v1.username')</span>
-                                </div>
-
-                                <input
-                                    class="tw-border tw-border-[#D1D5DA] tw-outline-none tw-h-12 tw-bg-transparent tw-rounded-lg tw-px-3 tw-font-medium tw-text-black placeholder:tw-text-gray-500 placeholder:tw-font-medium"
-                                    name="username" required autofocus placeholder="@lang('lang_v1.username')"
-                                    data-last-active-input="" id="username" type="text" name="username"
-                                    value="{{ $username }}" />
-                                @if ($errors->has('username'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('username') }}</strong>
-                                    </span>
-                                @endif
-                            </label>
-                        </div>
-
-                        <div class="form-group has-feedback {{ $errors->has('password') ? ' has-error' : '' }}">
-                            <label class="tw-dw-form-control">
-                                <div class="tw-dw-label">
-                                    <span
-                                        class="tw-text-xs md:tw-text-sm tw-font-medium tw-text-black">@lang('lang_v1.password')</span>
-                                    @if (config('app.env') != 'demo')
-                                        <a href="{{ route('password.request') }}"
-                                            class="tw-text-xs md:tw-text-sm tw-font-medium tw-bg-gradient-to-r tw-from-indigo-500 tw-to-blue-500 tw-inline-block tw-text-transparent tw-bg-clip-text hover:tw-text-[#467BF5]"
-                                            tabindex="-1">@lang('lang_v1.forgot_your_password')</a>
-                                    @endif
-                                </div>
-
-                                <input
-                                    class="tw-border tw-border-[#D1D5DA] tw-outline-none tw-h-12 tw-bg-transparent tw-rounded-lg tw-px-3 tw-font-medium tw-text-black placeholder:tw-text-gray-500 placeholder:tw-font-medium"
-                                    id="password" type="password" name="password" value="{{ $password }}" required
-                                    placeholder="@lang('lang_v1.password')" />
-                                <button type="button" id="show_hide_icon" class="show_hide_icon"
-                                    style="position: absolute; top:48px;right:5px;">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-eye tw-w-6" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
-                                        <path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" />
-                                    </svg>
-                                </button>
-                            </label>
-                            @if ($errors->has('password'))
-                                <span class="help-block">
-                                    <strong>{{ $errors->first('password') }}</strong>
-                                </span>
-                            @endif
-                        </div>
-
-
-                        <div class="tw-dw-form-control">
-                            <label class="tw-dw-cursor-pointer tw-dw-label tw-self-start tw-gap-2">
-                                <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}
-                                    class="tw-dw-checkbox">
-                                <span
-                                    class="tw-text-xs md:tw-text-sm tw-font-medium tw-text-black tw-mt-[0.2rem]">@lang('lang_v1.remember_me')</span>
-                            </label>
-                        </div>
-                        @if(config('constants.enable_recaptcha'))
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <div class="g-recaptcha" data-sitekey="{{ config('constants.google_recaptcha_key') }}"></div>
-                                        @if ($errors->has('g-recaptcha-response'))
-                                            <span class="text-danger">{{ $errors->first('g-recaptcha-response') }}</span>
-                                        @endif
-                                </div>  
-                            </div>
-                        </div>
-                        @endif
-                        <button type="submit"
-                            class="tw-bg-gradient-to-r tw-from-indigo-500 tw-to-blue-500 tw-h-12 tw-rounded-xl tw-text-sm md:tw-text-base tw-text-white tw-font-semibold tw-w-full tw-max-w-full mt-2 hover:tw-from-indigo-600 hover:tw-to-blue-600 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-blue-500 focus:tw-ring-offset-2 active:tw-from-indigo-700 active:tw-to-blue-700">
-                            @lang('lang_v1.login')
-                        </button>
-                    </form>
-
-                    <div class="tw-flex tw-items-center tw-flex-col">
-                        <!-- Register Url -->
-
-                        @if (!($request->segment(1) == 'business' && $request->segment(2) == 'register'))
-                            <!-- Register Url -->
-                            @if (config('constants.allow_registration'))
-                                <a href="{{ route('business.getRegister') }}@if (!empty(request()->lang)) {{ '?lang=' . request()->lang }} @endif"
-                                    class="tw-text-sm tw-font-medium tw-text-gray-500 hover:tw-text-gray-500 tw-mt-2">{{ __('business.not_yet_registered') }}
-                                    <span
-                                        class="tw-text-sm tw-font-medium tw-bg-gradient-to-r tw-from-indigo-500 tw-to-blue-500 tw-inline-block tw-text-transparent tw-bg-clip-text hover:tw-text-[#467BF5] hover:tw-underline">{{ __('business.register_now') }}</span></a>
-                            @endif
-                        @endif
-                    </div>
+            {{-- App Branding --}}
+            <div style="text-align:center; margin-bottom:28px;">
+                <div style="display:inline-flex; align-items:center; justify-content:center; width:56px; height:56px; background:linear-gradient(135deg,#4f46e5,#6366f1); border-radius:16px; box-shadow:0 8px 24px rgba(79,70,229,0.35); margin-bottom:16px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
                 </div>
+                <h1 style="font-size:1.5rem; font-weight:800; color:#ffffff; margin:0 0 4px; letter-spacing:-0.02em;">
+                    {{ config('app.name', 'FastPos ERP') }}
+                </h1>
+                <p style="color:rgba(148,163,184,0.9); font-size:0.875rem; font-weight:400; margin:0;">
+                    @lang('lang_v1.welcome_back') — @lang('lang_v1.login_to_your') account
+                </p>
             </div>
+
+            {{-- Login Card --}}
+            <div style="background:rgba(255,255,255,0.97); border-radius:20px; padding:36px 32px; box-shadow:0 25px 60px rgba(0,0,0,0.35), 0 8px 20px rgba(0,0,0,0.15); border:1px solid rgba(255,255,255,0.2);">
+
+                @if ($errors->any())
+                    <div style="background:#fff1f2; border:1px solid #fda4af; border-radius:10px; padding:12px 14px; margin-bottom:20px; color:#881337; font-size:0.8125rem; font-weight:500;">
+                        <strong>@lang('lang_v1.login_failed')</strong>
+                        @foreach ($errors->all() as $error)
+                            <div>{{ $error }}</div>
+                        @endforeach
+                    </div>
+                @endif
+
+                <form method="POST" action="{{ route('login') }}" id="login-form">
+                    {{ csrf_field() }}
+
+                    {{-- Username --}}
+                    <div style="margin-bottom:18px;">
+                        <label style="display:block; font-size:0.8125rem; font-weight:600; color:#1e293b; margin-bottom:6px;">
+                            @lang('lang_v1.username')
+                        </label>
+                        <input
+                            id="username"
+                            type="text"
+                            name="username"
+                            value="{{ $username ?? old('username') }}"
+                            required autofocus
+                            placeholder="@lang('lang_v1.username')"
+                            data-last-active-input=""
+                            style="width:100%; height:46px; border-radius:10px; border:1.5px solid #e2e8f0; background:#f8fafc; color:#0f172a; font-size:0.9rem; font-weight:500; padding:0 14px; outline:none; transition:all 0.2s; box-sizing:border-box;"
+                            onfocus="this.style.borderColor='#4f46e5'; this.style.boxShadow='0 0 0 3px rgba(79,70,229,0.18)'; this.style.background='#fff';"
+                            onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'; this.style.background='#f8fafc';"
+                        />
+                        @if ($errors->has('username'))
+                            <span style="color:#ef4444; font-size:0.75rem; font-weight:500; margin-top:4px; display:block;">{{ $errors->first('username') }}</span>
+                        @endif
+                    </div>
+
+                    {{-- Password --}}
+                    <div style="margin-bottom:20px;">
+                        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
+                            <label style="font-size:0.8125rem; font-weight:600; color:#1e293b; margin:0;">
+                                @lang('lang_v1.password')
+                            </label>
+                            @if (config('app.env') != 'demo')
+                                <a href="{{ route('password.request') }}"
+                                    style="font-size:0.75rem; font-weight:600; color:#4f46e5; text-decoration:none;"
+                                    tabindex="-1">@lang('lang_v1.forgot_your_password')</a>
+                            @endif
+                        </div>
+                        <div style="position:relative;">
+                            <input
+                                id="password"
+                                type="password"
+                                name="password"
+                                value="{{ $password ?? '' }}"
+                                required
+                                placeholder="@lang('lang_v1.password')"
+                                style="width:100%; height:46px; border-radius:10px; border:1.5px solid #e2e8f0; background:#f8fafc; color:#0f172a; font-size:0.9rem; font-weight:500; padding:0 44px 0 14px; outline:none; transition:all 0.2s; box-sizing:border-box;"
+                                onfocus="this.style.borderColor='#4f46e5'; this.style.boxShadow='0 0 0 3px rgba(79,70,229,0.18)'; this.style.background='#fff';"
+                                onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'; this.style.background='#f8fafc';"
+                            />
+                            <button type="button" id="show_hide_icon" class="show_hide_icon"
+                                style="position:absolute; top:50%; right:12px; transform:translateY(-50%); background:none; border:none; cursor:pointer; padding:0; display:flex; align-items:center; color:#94a3b8;">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-eye" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                    <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                                    <path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" />
+                                </svg>
+                            </button>
+                        </div>
+                        @if ($errors->has('password'))
+                            <span style="color:#ef4444; font-size:0.75rem; font-weight:500; margin-top:4px; display:block;">{{ $errors->first('password') }}</span>
+                        @endif
+                    </div>
+
+                    {{-- Remember Me --}}
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:22px;">
+                        <input type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}
+                            style="width:16px; height:16px; border-radius:4px; accent-color:#4f46e5; cursor:pointer;">
+                        <label for="remember" style="font-size:0.8125rem; font-weight:500; color:#475569; cursor:pointer; margin:0;">
+                            @lang('lang_v1.remember_me')
+                        </label>
+                    </div>
+
+                    @if(config('constants.enable_recaptcha'))
+                    <div style="margin-bottom:20px;">
+                        <div class="g-recaptcha" data-sitekey="{{ config('constants.google_recaptcha_key') }}"></div>
+                        @if ($errors->has('g-recaptcha-response'))
+                            <span style="color:#ef4444; font-size:0.75rem;">{{ $errors->first('g-recaptcha-response') }}</span>
+                        @endif
+                    </div>
+                    @endif
+
+                    {{-- Submit --}}
+                    <button type="submit"
+                        style="width:100%; height:48px; background:linear-gradient(135deg,#4f46e5 0%,#6366f1 100%); color:#ffffff; font-size:0.9375rem; font-weight:700; border:none; border-radius:10px; cursor:pointer; box-shadow:0 4px 14px rgba(79,70,229,0.35); transition:all 0.22s; letter-spacing:0.01em;">
+                        @lang('lang_v1.login')
+                    </button>
+                </form>
+
+                @if (!($request->segment(1) == 'business' && $request->segment(2) == 'register'))
+                    @if (config('constants.allow_registration'))
+                        <div style="text-align:center; margin-top:22px; padding-top:22px; border-top:1px solid #f1f5f9;">
+                            <span style="font-size:0.8125rem; color:#64748b;">{{ __('business.not_yet_registered') }}</span>
+                            <a href="{{ route('business.getRegister') }}@if(!empty(request()->lang)){{'?lang='.request()->lang}}@endif"
+                                style="font-size:0.8125rem; font-weight:700; color:#4f46e5; text-decoration:none; margin-left:4px;">
+                                {{ __('business.register_now') }}
+                            </a>
+                        </div>
+                    @endif
+                @endif
+            </div>
+
+            {{-- Footer note --}}
+            <p style="text-align:center; color:rgba(148,163,184,0.7); font-size:0.75rem; margin-top:24px; font-weight:400;">
+                © {{ date('Y') }} {{ config('app.name', 'FastPos ERP') }} &mdash; Enterprise Point of Sale
+            </p>
         </div>
-        <div class="col-md-4"></div>
-    </div>
 
 @stop
 @section('javascript')

@@ -25,15 +25,16 @@
 
 </head>
 
-<body class="pace-done" data-new-gr-c-s-check-loaded="14.1172.0" data-gr-ext-installed="" cz-shortcut-listen="true">
+<body class="login-page pace-done" data-new-gr-c-s-check-loaded="14.1172.0" data-gr-ext-installed="" cz-shortcut-listen="true">
     @inject('request', 'Illuminate\Http\Request')
     @if (session('status') && session('status.success'))
         <input type="hidden" id="status_span" data-status="{{ session('status.success') }}"
             data-msg="{{ session('status.msg') }}">
     @endif
-    <div class="container-fluid">
-        <div class="row eq-height-row">
-            <div class="col-md-12 col-sm-12 col-xs-12 right-col tw-pt-20 tw-pb-10 tw-px-5">
+
+    <div class="container-fluid" style="min-height:100vh; display:flex; flex-direction:column; position:relative; z-index:1;">
+        <div class="row eq-height-row" style="flex:1; min-height:100vh;">
+            <div class="col-md-12 col-sm-12 col-xs-12 right-col" style="display:flex; align-items:center; justify-content:center; min-height:100vh; padding: 40px 16px;">
                 <div class="row">
                     {{-- Logo removed as requested --}}
 
