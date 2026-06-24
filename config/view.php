@@ -13,10 +13,10 @@ return [
     |
     */
 
-    'paths' => array_filter([
+    'paths' => array_values(array_filter([
         file_exists(base_path('custom_views')) ? base_path('custom_views') : null,
         resource_path('views'),
-    ]),
+    ])),
 
     /*
     |--------------------------------------------------------------------------
