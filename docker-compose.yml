@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  app:
+    image: webdevops/php-apache:8.2
+    container_name: fastpos_app
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/app
+    environment:
+      - WEB_DOCUMENT_ROOT=/app/public
+      - PHP_DISPLAY_ERRORS=0
+      - PHP_MEMORY_LIMIT=512M
+      - PHP_MAX_EXECUTION_TIME=300
+      - PHP_OPCACHE_ENABLE=1
+      - PHP_OPCACHE_MEMORY_CONSUMPTION=128
+      - PHP_OPCACHE_MAX_ACCELERATED_FILES=10000
+      - PHP_OPCACHE_REVALIDATE_FREQ=2
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=fastpos
+      - DB_USERNAME=root
+      - DB_PASSWORD=root
+    depends_on:
+      - db
+
+  db:
+    image: mariadb:10.6
+    container_name: fastpos_db
+    command: >
+      --innodb-buffer-pool-size=1G
+      --innodb-log-file-size=256M
+      --innodb-flush-method=O_DIRECT
+      --innodb-flush-log-at-trx-commit=2
+      --innodb-file-per-table=1
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=fastpos
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
