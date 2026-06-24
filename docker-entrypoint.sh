@@ -6,6 +6,18 @@ echo "  FastPos — Fast Technologies"
 echo "  Starting application..."
 echo "──────────────────────────────────────────────"
 
+# Ensure .env exists and is readable by www-data (Laravel's isAppInstalled() checks file_exists('.env'))
+if [ -f "/app/.env" ]; then
+    echo "[FastPos] Setting permissions for .env..."
+    chown www-data:www-data /app/.env
+    chmod 644 /app/.env
+else
+    echo "[FastPos] Creating dummy .env..."
+    touch /app/.env
+    chown www-data:www-data /app/.env
+    chmod 644 /app/.env
+fi
+
 # Generate app key if not set
 if [ -z "$APP_KEY" ]; then
     echo "[FastPos] Generating APP_KEY..."
