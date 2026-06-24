@@ -12,33 +12,80 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 try {
-    $users = DB::table('users')->select('id', 'username', 'email')->get();
-    echo "<h2>Existing Users in Database:</h2><pre>";
-    foreach ($users as $user) {
-        echo "ID: {$user->id} | Username: {$user->username} | Email: {$user->email}\n";
-    }
+    // 1. Show database tables
+    $tables = DB::select('SHOW TABLES');
+    echo "<h3>Tables in DB:</h3><pre>";
+    print_r($tables);
     echo "</pre>";
 
-    // Reset password for superadmin
-    $superadminExists = DB::table('users')->where('username', 'superadmin')->exists();
-    if ($superadminExists) {
-        $affected = DB::table('users')
-            ->where('username', 'superadmin')
-            ->update(['password' => Hash::make('123456')]);
-        echo "<p style='color:green;'>Superadmin password reset status: affected rows = {$affected}</p>";
+    // 2. Count users
+    $userCount = DB::table('users')->count();
+    echo "<p>User count in DB: $userCount</p>";
+
+    // 3. Create superadmin if not exists
+    $superadmin = DB::table('users')->where('username', 'superadmin')->first();
+    if (!$superadmin) {
+        echo "<p>Creating superadmin user...</p>";
+        $now = date('Y-m-d H:i:s');
+        $userId = DB::table('users')->insertGetId([
+            'surname' => 'Mr.',
+            'first_name' => 'Super',
+            'last_name' => 'Admin',
+            'username' => 'superadmin',
+            'email' => 'superadmin@example.com',
+            'password' => Hash::make('123456'),
+            'language' => 'en',
+            'business_id' => null,
+            'created_at' => $now,
+            'updated_at' => $now
+        ]);
+        echo "<p style='color:green;'>Superadmin created with ID: $userId</p>";
     } else {
-        echo "<p style='color:red;'>Superadmin user does not exist in DB.</p>";
+        echo "<p>Superadmin already exists. Resetting password...</p>";
+        DB::table('users')->where('username', 'superadmin')->update([
+            'password' => Hash::make('123456')
+        ]);
+        echo "<p style='color:green;'>Superadmin password reset to 123456.</p>";
     }
 
-    // Reset password for admin
-    $adminExists = DB::table('users')->where('username', 'admin')->exists();
-    if ($adminExists) {
-        $affected2 = DB::table('users')
-            ->where('username', 'admin')
-            ->update(['password' => Hash::make('123456')]);
-        echo "<p style='color:green;'>Admin password reset status: affected rows = {$affected2}</p>";
+    // 4. Create admin user if not exists
+    $admin = DB::table('users')->where('username', 'admin')->first();
+    if (!$admin) {
+        echo "<p>Creating admin user...</p>";
+        // Check if business exists
+        $businessExists = DB::table('business')->where('id', 1)->exists();
+        if (!$businessExists) {
+            echo "<p>Business ID 1 does not exist. Creating default business...</p>";
+            DB::table('business')->insert([
+                'id' => 1,
+                'name' => 'Default Business',
+                'currency_id' => 2, // USD
+                'start_date' => '2026-01-01',
+                'time_zone' => 'Asia/Dhaka',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ]);
+            echo "<p style='color:green;'>Default business created.</p>";
+        }
+
+        $userId = DB::table('users')->insertGetId([
+            'surname' => 'Mr',
+            'first_name' => 'Admin',
+            'username' => 'admin',
+            'email' => 'admin@example.com',
+            'password' => Hash::make('123456'),
+            'language' => 'en',
+            'business_id' => 1,
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s')
+        ]);
+        echo "<p style='color:green;'>Admin created with ID: $userId</p>";
     } else {
-        echo "<p style='color:red;'>Admin user does not exist in DB.</p>";
+        echo "<p>Admin already exists. Resetting password...</p>";
+        DB::table('users')->where('username', 'admin')->update([
+            'password' => Hash::make('123456')
+        ]);
+        echo "<p style='color:green;'>Admin password reset to 123456.</p>";
     }
 
 } catch (\Exception $e) {
