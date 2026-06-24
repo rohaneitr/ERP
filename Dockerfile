@@ -38,7 +38,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
     && composer clear-cache
 
 # ─── Storage Permissions ─────────────────────────────────────────────────────
-RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache \
+RUN chown -R application:application /app/storage /app/bootstrap/cache \
     && chmod -R 775 /app/storage /app/bootstrap/cache
 
 # ─── Laravel Optimization (runs at build time via entrypoint) ────────────────
