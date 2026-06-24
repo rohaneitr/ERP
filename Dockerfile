@@ -59,7 +59,8 @@ RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache \
 # ─── Laravel Optimization (runs at build time via entrypoint) ────────────────
 # Note: config:cache, route:cache, view:cache run at startup after .env is mounted
 COPY docker-entrypoint.sh /usr/local/bin/fastpos-entrypoint.sh
-RUN chmod +x /usr/local/bin/fastpos-entrypoint.sh
+RUN sed -i 's/\r$//' /usr/local/bin/fastpos-entrypoint.sh \
+    && chmod +x /usr/local/bin/fastpos-entrypoint.sh
 
 EXPOSE 80
 
