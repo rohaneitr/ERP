@@ -12,12 +12,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 try {
-    // 1. Show database tables
-    $tables = DB::select('SHOW TABLES');
-    echo "<h3>Tables in DB:</h3><pre>";
-    print_r($tables);
-    echo "</pre>";
-
     // 2. Count users
     $userCount = DB::table('users')->count();
     echo "<p>User count in DB: $userCount</p>";
