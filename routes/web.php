@@ -61,28 +61,6 @@ use App\Http\Controllers\VariationTemplateController;
 use App\Http\Controllers\WarrantyController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/diagnose-session', function () {
-    $user = \App\User::where('username', 'fstadmin')->first();
-    $results = [
-        'user_found' => !empty($user),
-        'user_id' => $user ? $user->id : null,
-        'business_id' => $user ? $user->business_id : null,
-    ];
-    if ($user) {
-        try {
-            $results['user_business_exists'] = !empty($user->business);
-            if ($user->business) {
-                $results['user_business_is_active'] = $user->business->is_active;
-            } else {
-                $results['user_business_is_active'] = 'business is null';
-            }
-        } catch (\Throwable $e) {
-            $results['business_error'] = $e->getMessage();
-        }
-    }
-    return response()->json($results, 200, [], JSON_PRETTY_PRINT);
-});
-
 
 /*
 |--------------------------------------------------------------------------
