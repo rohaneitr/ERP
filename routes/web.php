@@ -61,6 +61,46 @@ use App\Http\Controllers\VariationTemplateController;
 use App\Http\Controllers\WarrantyController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/diagnose-session', function () {
+    $results = [];
+    if (function_exists('posix_getpwuid') && function_exists('posix_geteuid')) {
+        $user = posix_getpwuid(posix_geteuid());
+        $results['php_user'] = $user['name'] . ' (UID: ' . $user['uid'] . ', GID: ' . $user['gid'] . ')';
+    } else {
+        $results['php_user'] = exec('whoami');
+    }
+    $session_path = storage_path('framework/sessions');
+    $results['session_path'] = $session_path;
+    $results['session_path_exists'] = file_exists($session_path);
+    $results['session_path_is_writable'] = is_writable($session_path);
+    $results['session_path_perms'] = file_exists($session_path) ? substr(sprintf('%o', fileperms($session_path)), -4) : null;
+    if (file_exists($session_path)) {
+        $results['session_path_owner'] = fileowner($session_path);
+        $results['session_path_group'] = filegroup($session_path);
+    }
+    $test_file = $session_path . '/test_write.txt';
+    $results['test_write_success'] = false;
+    try {
+        $write_res = file_put_contents($test_file, 'test ' . time());
+        if ($write_res !== false) {
+            $results['test_write_success'] = true;
+            $results['test_read_content'] = file_get_contents($test_file);
+            unlink($test_file);
+        }
+    } catch (\Exception $e) {
+        $results['test_write_error'] = $e->getMessage();
+    }
+    $results['session_config'] = config('session');
+    $results['server_headers'] = request()->headers->all();
+    $results['server_vars'] = $_SERVER;
+    $logs_path = storage_path('logs');
+    $results['logs_path'] = $logs_path;
+    $results['logs_path_is_writable'] = is_writable($logs_path);
+    $results['logs_files'] = file_exists($logs_path) ? scandir($logs_path) : [];
+    return response()->json($results, 200, [], JSON_PRETTY_PRINT);
+});
+
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
