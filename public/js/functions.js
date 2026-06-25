@@ -1,5 +1,16 @@
 //This file contains all functions used in the app.
 
+var __p_currency_symbol = '';
+var __p_currency_thousand_separator = ',';
+var __p_currency_decimal_separator = '.';
+var __currency_symbol = '';
+var __currency_thousand_separator = ',';
+var __currency_decimal_separator = '.';
+var __currency_symbol_placement = 'before';
+var __currency_precision = 2;
+var __quantity_precision = 2;
+
+
 function __calculate_amount(calculation_type, calculation_amount, amount) {
     var calculation_amount = parseFloat(calculation_amount);
     calculation_amount = isNaN(calculation_amount) ? 0 : calculation_amount;
