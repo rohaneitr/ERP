@@ -273,6 +273,10 @@ class SubscriptionController extends BaseController
             abort(403, 'Unauthorized action.');
         }
 
+        if ($request->gateway === 'cash') {
+            $request->merge(['gateway' => 'offline']);
+        }
+
         try {
 
             //Disable in demo
@@ -888,5 +892,149 @@ class SubscriptionController extends BaseController
         }
 
         return $end_date;
+    }
+
+    /**
+     * Initiate payment using SSLCOMMERZ
+     */
+    public function sslcommerzInit(Request $request)
+    {
+        if (! auth()->user()->can('superadmin.access_package_subscriptions')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $package_id = $request->input('package_id');
+        $coupon_code = $request->input('coupon_code');
+        $price = $request->input('price');
+        $business_id = request()->session()->get('user.business_id');
+        $user_id = request()->session()->get('user.id');
+        $user = auth()->user();
+
+        $package = Package::active()->find($package_id);
+        if (!$package) {
+            return back()->with('status', ['success' => 0, 'msg' => 'Invalid package.']);
+        }
+
+        $tran_id = 'SSLC_' . uniqid();
+
+        $post_data = [
+            'store_id' => config('sslcommerz.store_id'),
+            'store_passwd' => config('sslcommerz.store_password'),
+            'total_amount' => $price,
+            'currency' => 'BDT',
+            'tran_id' => $tran_id,
+            'success_url' => route('sslcommerz-success'),
+            'fail_url' => route('sslcommerz-fail'),
+            'cancel_url' => route('sslcommerz-cancel'),
+            'ipn_url' => route('sslcommerz-ipn'),
+            'cus_name' => $user->first_name . ' ' . $user->last_name,
+            'cus_email' => $user->email,
+            'cus_phone' => $user->contact_no ?? '01700000000',
+            'cus_add1' => 'Dhaka',
+            'cus_city' => 'Dhaka',
+            'cus_country' => 'Bangladesh',
+            'shipping_method' => 'NO',
+            'product_name' => $package->name . ' Subscription',
+            'product_category' => 'SaaS',
+            'product_profile' => 'non-physical-goods',
+            'value_a' => $package_id,
+            'value_b' => $business_id,
+            'value_c' => $user_id,
+            'value_d' => $coupon_code,
+        ];
+
+        $api_url = config('sslcommerz.api_domain') . '/gwprocess/v4/api.php';
+
+        try {
+            $response = Http::asForm()->post($api_url, $post_data);
+            if ($response->successful()) {
+                $result = $response->json();
+                if (isset($result['status']) && $result['status'] === 'SUCCESS' && !empty($result['GatewayPageURL'])) {
+                    return redirect()->away($result['GatewayPageURL']);
+                }
+                $error_msg = $result['failedreason'] ?? 'SSLCOMMERZ initiation failed.';
+            } else {
+                $error_msg = 'Unable to connect to SSLCOMMERZ.';
+            }
+        } catch (\Exception $e) {
+            $error_msg = $e->getMessage();
+        }
+
+        return back()->with('status', ['success' => 0, 'msg' => $error_msg]);
+    }
+
+    public function sslcommerzCallbackSuccess(Request $request)
+    {
+        return $this->sslcommerzCallback($request, 'success');
+    }
+
+    public function sslcommerzCallbackFail(Request $request)
+    {
+        return $this->sslcommerzCallback($request, 'fail');
+    }
+
+    public function sslcommerzCallbackCancel(Request $request)
+    {
+        return $this->sslcommerzCallback($request, 'cancel');
+    }
+
+    public function sslcommerzCallbackIpn(Request $request)
+    {
+        return $this->sslcommerzCallback($request, 'ipn');
+    }
+
+    protected function sslcommerzCallback(Request $request, $status)
+    {
+        $tran_id = $request->input('tran_id');
+        $val_id = $request->input('val_id');
+        $amount = $request->input('amount');
+        $package_id = $request->input('value_a');
+        $business_id = $request->input('value_b');
+        $user_id = $request->input('value_c');
+        $coupon_code = $request->input('value_d');
+
+        \Log::info('SSLCOMMERZ Callback: ' . $status . ' - Tran ID: ' . $tran_id);
+
+        if ($status === 'success' || $status === 'ipn') {
+            $validation_url = config('sslcommerz.api_domain') . '/validator/api/valid.php';
+            try {
+                $response = Http::get($validation_url, [
+                    'val_id' => $val_id,
+                    'store_id' => config('sslcommerz.store_id'),
+                    'store_passwd' => config('sslcommerz.store_password'),
+                ]);
+
+                if ($response->successful()) {
+                    $result = $response->json();
+                    if (isset($result['status']) && ($result['status'] === 'VALID' || $result['status'] === 'AMBIGUOUS')) {
+                        if (!Subscription::where('payment_transaction_id', $tran_id)->exists()) {
+                            $this->_add_subscription($coupon_code, $amount, $business_id, $package_id, 'sslcommerz', $tran_id, $user_id);
+                        }
+
+                        if ($status === 'ipn') {
+                            return response()->json(['status' => 'success', 'message' => 'IPN Processed.']);
+                        }
+
+                        return redirect()
+                            ->action([\Modules\Superadmin\Http\Controllers\SubscriptionController::class, 'index'])
+                            ->with('status', ['success' => 1, 'msg' => __('lang_v1.success')]);
+                    }
+                }
+            } catch (\Exception $e) {
+                \Log::emergency('SSLCOMMERZ verification crash: ' . $e->getMessage());
+            }
+
+            if ($status === 'ipn') {
+                return response()->json(['status' => 'failed', 'message' => 'Verification failed.'], 400);
+            }
+
+            return redirect()
+                ->action([\Modules\Superadmin\Http\Controllers\SubscriptionController::class, 'index'])
+                ->with('status', ['success' => 0, 'msg' => 'SSLCOMMERZ transaction verification failed.']);
+        }
+
+        return redirect()
+            ->action([\Modules\Superadmin\Http\Controllers\SubscriptionController::class, 'index'])
+            ->with('status', ['success' => 0, 'msg' => 'Payment ' . ucfirst($status) . 'ed.']);
     }
 }

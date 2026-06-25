@@ -74,6 +74,14 @@ Route::middleware('web', 'SetSessionData', 'auth', 'language', 'timezone', 'Admi
     Route::get('/subscription/{subcription_id}/force-active', [Modules\Superadmin\Http\Controllers\SubscriptionController::class, 'forceActive'])->name('force-active');
     Route::get('/myfatoorah-callback', [Modules\Superadmin\Http\Controllers\SubscriptionController::class, 'myfatoorahcallback'])->name('myfatoorah_callback');
 
+    // Routes related to SSLCOMMERZ initiation
+    Route::post('/sslcommerz/init', [Modules\Superadmin\Http\Controllers\SubscriptionController::class, 'sslcommerzInit'])->name('sslcommerz-init');
 });
+
+// Routes related to SSLCOMMERZ callbacks (public)
+Route::post('/sslcommerz/success', [Modules\Superadmin\Http\Controllers\SubscriptionController::class, 'sslcommerzCallbackSuccess'])->name('sslcommerz-success');
+Route::post('/sslcommerz/fail', [Modules\Superadmin\Http\Controllers\SubscriptionController::class, 'sslcommerzCallbackFail'])->name('sslcommerz-fail');
+Route::post('/sslcommerz/cancel', [Modules\Superadmin\Http\Controllers\SubscriptionController::class, 'sslcommerzCallbackCancel'])->name('sslcommerz-cancel');
+Route::post('/sslcommerz/ipn', [Modules\Superadmin\Http\Controllers\SubscriptionController::class, 'sslcommerzCallbackIpn'])->name('sslcommerz-ipn');
 
 Route::get('/page/{slug}', [Modules\Superadmin\Http\Controllers\PageController::class, 'showPage'])->name('frontend-pages');

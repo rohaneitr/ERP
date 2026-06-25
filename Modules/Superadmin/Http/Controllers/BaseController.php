@@ -55,11 +55,17 @@ class BaseController extends Controller
         if (env('MY_FATOORAH_API_KEY') && env('MY_FATOORAH_COUNTRY_ISO')) {
             $gateways['myfatoorah'] = 'My Fatoorah';
         }
+
+        //check if SSLCOMMERZ is configured or not
+        if (env('SSLCOMMERZ_STORE_ID') && env('SSLCOMMERZ_STORE_PASSWORD')) {
+            $gateways['sslcommerz'] = 'SSLCOMMERZ';
+        }
+
         // check if offline payment is enabled or not
         $is_offline_payment_enabled = System::getProperty('enable_offline_payment');
 
         if ($is_offline_payment_enabled) {
-            $gateways['offline'] = 'Offline';
+            $gateways['offline'] = 'Cash';
         }
 
         return $gateways;
