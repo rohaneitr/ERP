@@ -195,6 +195,32 @@
 
 
 
+                <!-- Language Switcher Dropdown -->
+                <details class="tw-dw-dropdown tw-relative tw-inline-block tw-text-left">
+                    <summary class="tw-dw-m-1 tw-inline-flex tw-transition-all tw-ring-1 tw-ring-white/10 tw-cursor-pointer tw-duration-200 theme-btn-bg tw-py-1.5 tw-px-3 tw-rounded-lg tw-items-center tw-justify-center tw-text-sm tw-font-medium tw-text-white hover:tw-text-white tw-gap-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="tw-size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="2" y1="12" x2="22" y2="12"></line>
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                        </svg>
+                        <span>
+                            {{ session()->get('user.language', config('app.locale')) == 'bn' ? 'বাংলা 🇧🇩' : 'English 🇬🇧' }}
+                        </span>
+                    </summary>
+                    <ul class="tw-p-2 tw-w-48 tw-absolute tw-right-0 tw-z-10 tw-mt-2 tw-origin-top-right tw-bg-white tw-rounded-lg tw-shadow-lg tw-ring-1 tw-ring-gray-200 focus:tw-outline-none" role="menu">
+                        <li>
+                            <a href="{{ route('change-language', 'en') }}" class="tw-flex tw-items-center tw-gap-2 tw-px-3 tw-py-2 tw-text-sm tw-font-medium tw-text-gray-600 tw-transition-all tw-duration-200 tw-rounded-lg hover:tw-text-gray-900 hover:tw-bg-gray-100">
+                                English 🇬🇧
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('change-language', 'bn') }}" class="tw-flex tw-items-center tw-gap-2 tw-px-3 tw-py-2 tw-text-sm tw-font-medium tw-text-gray-600 tw-transition-all tw-duration-200 tw-rounded-lg hover:tw-text-gray-900 hover:tw-bg-gray-100">
+                                বাংলা 🇧🇩
+                            </a>
+                        </li>
+                    </ul>
+                </details>
+
                 <details class="tw-dw-dropdown tw-relative tw-inline-block tw-text-left">
                     <summary data-toggle="popover"
                         class="tw-dw-m-1 tw-inline-flex tw-transition-all tw-ring-1 tw-ring-white/10 tw-cursor-pointer tw-duration-200 theme-btn-bg tw-py-1.5 tw-px-3 tw-rounded-lg tw-items-center tw-justify-center tw-text-sm tw-font-medium tw-text-white hover:tw-text-white tw-gap-1">

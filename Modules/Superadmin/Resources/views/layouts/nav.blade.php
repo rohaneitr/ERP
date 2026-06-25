@@ -28,6 +28,19 @@
                     <li @if(request()->segment(1) == 'superadmin' && request()->segment(2) == 'communicator') class="active" @endif><a href="{{action([\Modules\Superadmin\Http\Controllers\CommunicatorController::class, 'index'])}}">@lang('superadmin::lang.communicator')</a></li>
                 </ul>
 
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" style="padding: 15px;">
+                            <i class="fa fa-globe"></i> {{ session()->get('user.language', config('app.locale')) == 'bn' ? 'বাংলা 🇧🇩' : 'English 🇬🇧' }} <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{{ route('change-language', 'en') }}">English 🇬🇧</a></li>
+                            <li><a href="{{ route('change-language', 'bn') }}">বাংলা 🇧🇩</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="{{action([\App\Http\Controllers\HomeController::class, 'index'])}}"><i class="fa fa-home"></i> @lang('superadmin::lang.back_to_app')</a></li>
+                </ul>
+
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
     </nav>

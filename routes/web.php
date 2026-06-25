@@ -525,7 +525,25 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone'])
         ->name('quotation.downloadPdf');
     Route::get('/download-packing-list/{id}/pdf', [SellPosController::class, 'downloadPackingListPdf'])
         ->name('packing.downloadPdf');
-    Route::get('/sells/invoice-url/{id}', [SellPosController::class, 'showInvoiceUrl']);
     Route::get('/show-notification/{id}', [HomeController::class, 'showNotification']);
     Route::post('/sell/check-invoice-number', [SellController::class, 'checkInvoiceNumber']);
 });
+
+Route::get('/change-language/{locale}', function ($locale) {
+    if (array_key_exists($locale, config('constants.langs'))) {
+        session()->put('user.language', $locale);
+        if (auth()->check()) {
+            $user = auth()->user();
+            $user->language = $locale;
+            $user->save();
+            
+            // Update session 'user' data
+            if (session()->has('user')) {
+                $userData = session()->get('user');
+                $userData['language'] = $locale;
+                session()->put('user', $userData);
+            }
+        }
+    }
+    return redirect()->back();
+})->name('change-language');
