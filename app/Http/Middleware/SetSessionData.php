@@ -30,23 +30,27 @@ class SetSessionData
                 'business_id' => $user->business_id,
                 'language' => $user->language,
             ];
-            $business = Business::findOrFail($user->business_id);
-
-            $currency = $business->currency;
-            $currency_data = ['id' => $currency->id,
-                'code' => $currency->code,
-                'symbol' => $currency->symbol,
-                'thousand_separator' => $currency->thousand_separator,
-                'decimal_separator' => $currency->decimal_separator,
-            ];
-
             $request->session()->put('user', $session_data);
-            $request->session()->put('business', $business);
-            $request->session()->put('currency', $currency_data);
 
-            //set current financial year to session
-            $financial_year = $business_util->getCurrentFinancialYear($business->id);
-            $request->session()->put('financial_year', $financial_year);
+            if (!empty($user->business_id)) {
+                $business = Business::find($user->business_id);
+                if ($business) {
+                    $currency = $business->currency;
+                    $currency_data = ['id' => $currency->id,
+                        'code' => $currency->code,
+                        'symbol' => $currency->symbol,
+                        'thousand_separator' => $currency->thousand_separator,
+                        'decimal_separator' => $currency->decimal_separator,
+                    ];
+
+                    $request->session()->put('business', $business);
+                    $request->session()->put('currency', $currency_data);
+
+                    //set current financial year to session
+                    $financial_year = $business_util->getCurrentFinancialYear($business->id);
+                    $request->session()->put('financial_year', $financial_year);
+                }
+            }
         }
 
         return $next($request);

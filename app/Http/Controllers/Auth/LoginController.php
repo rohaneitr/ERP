@@ -89,7 +89,7 @@ class LoginController extends Controller
     {
         $this->businessUtil->activityLog($user, 'login', null, [], false, $user->business_id);
 
-        if (! $user->business->is_active) {
+        if ($user->business && ! $user->business->is_active) {
             \Auth::logout();
 
             return redirect('/login')
@@ -127,6 +127,10 @@ class LoginController extends Controller
     protected function redirectTo()
     {
         $user = \Auth::user();
+        if ($user->business_id === null) {
+            return '/superadmin';
+        }
+
         if (! $user->can('dashboard.data') && $user->can('sell.create')) {
             return '/pos/create';
         }
