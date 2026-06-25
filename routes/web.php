@@ -62,26 +62,24 @@ use App\Http\Controllers\WarrantyController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/diagnose-session', function () {
-    $results = [];
-    if (function_exists('posix_getpwuid') && function_exists('posix_geteuid')) {
-        $user = posix_getpwuid(posix_geteuid());
-        $results['php_user'] = $user['name'] . ' (UID: ' . $user['uid'] . ', GID: ' . $user['gid'] . ')';
-    } else {
-        $results['php_user'] = exec('whoami');
+    $user = \App\User::where('username', 'fstadmin')->first();
+    $results = [
+        'user_found' => !empty($user),
+        'user_id' => $user ? $user->id : null,
+        'business_id' => $user ? $user->business_id : null,
+    ];
+    if ($user) {
+        try {
+            $results['user_business_exists'] = !empty($user->business);
+            if ($user->business) {
+                $results['user_business_is_active'] = $user->business->is_active;
+            } else {
+                $results['user_business_is_active'] = 'business is null';
+            }
+        } catch (\Throwable $e) {
+            $results['business_error'] = $e->getMessage();
+        }
     }
-    $session_path = storage_path('framework/sessions');
-    $results['session_path'] = $session_path;
-    $results['session_path_exists'] = file_exists($session_path);
-    $results['session_path_is_writable'] = is_writable($session_path);
-    try {
-        $results['db_connection_status'] = 'OK';
-        $results['db_users_count'] = \DB::table('users')->count();
-        $results['db_users'] = \DB::table('users')->select('id', 'username', 'email', 'allow_login', 'user_type', 'business_id')->get()->toArray();
-    } catch (\Exception $e) {
-        $results['db_connection_status'] = 'Error: ' . $e->getMessage();
-    }
-    $results['session_config'] = config('session');
-    $results['server_headers'] = request()->headers->all();
     return response()->json($results, 200, [], JSON_PRETTY_PRINT);
 });
 
