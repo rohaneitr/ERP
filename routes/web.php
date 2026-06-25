@@ -73,30 +73,15 @@ Route::get('/diagnose-session', function () {
     $results['session_path'] = $session_path;
     $results['session_path_exists'] = file_exists($session_path);
     $results['session_path_is_writable'] = is_writable($session_path);
-    $results['session_path_perms'] = file_exists($session_path) ? substr(sprintf('%o', fileperms($session_path)), -4) : null;
-    if (file_exists($session_path)) {
-        $results['session_path_owner'] = fileowner($session_path);
-        $results['session_path_group'] = filegroup($session_path);
-    }
-    $test_file = $session_path . '/test_write.txt';
-    $results['test_write_success'] = false;
     try {
-        $write_res = file_put_contents($test_file, 'test ' . time());
-        if ($write_res !== false) {
-            $results['test_write_success'] = true;
-            $results['test_read_content'] = file_get_contents($test_file);
-            unlink($test_file);
-        }
+        $results['db_connection_status'] = 'OK';
+        $results['db_users_count'] = \DB::table('users')->count();
+        $results['db_users'] = \DB::table('users')->select('id', 'username', 'email', 'allow_login', 'user_type', 'business_id')->get()->toArray();
     } catch (\Exception $e) {
-        $results['test_write_error'] = $e->getMessage();
+        $results['db_connection_status'] = 'Error: ' . $e->getMessage();
     }
     $results['session_config'] = config('session');
     $results['server_headers'] = request()->headers->all();
-    $results['server_vars'] = $_SERVER;
-    $logs_path = storage_path('logs');
-    $results['logs_path'] = $logs_path;
-    $results['logs_path_is_writable'] = is_writable($logs_path);
-    $results['logs_files'] = file_exists($logs_path) ? scandir($logs_path) : [];
     return response()->json($results, 200, [], JSON_PRETTY_PRINT);
 });
 
