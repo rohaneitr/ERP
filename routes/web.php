@@ -79,6 +79,15 @@ Route::middleware(['setData'])->group(function () {
         return view('welcome');
     });
 
+    Route::get('/session-set', function() {
+        session(['test_persist' => 'Laravel Session works!']);
+        return "Session set. <a href='/session-get'>Click here to read</a>";
+    });
+
+    Route::get('/session-get', function() {
+        return "Session test_persist: " . (session('test_persist') ?? 'NOT FOUND');
+    });
+
     Auth::routes();
 
     Route::get('/business/register', [BusinessController::class, 'getRegister'])->name('business.getRegister');
